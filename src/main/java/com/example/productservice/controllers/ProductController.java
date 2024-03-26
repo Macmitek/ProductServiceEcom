@@ -2,6 +2,8 @@ package com.example.productservice.controllers;
 
 import com.example.productservice.models.Product;
 import com.example.productservice.services.ProductService;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -18,8 +20,10 @@ public class ProductController {
 
     //localhost:8080/products/30
     @GetMapping("/{id}")
-    public Product getProductById(@PathVariable("id") Long id) {
-        return productService.getProductById(id);
+    public ResponseEntity<Product> getProductById(@PathVariable("id") Long id) {
+
+        Product product = productService.getProductById(id);
+        return new ResponseEntity<>(product, HttpStatusCode.valueOf(404));
     }
 
     //localhost:8080/products
@@ -43,7 +47,7 @@ public class ProductController {
     //Replace Product
     @PutMapping("/{id}")
     public Product replaceProduct(@PathVariable("id") Long id,@RequestBody Product product) {
-        return new Product();
+        return productService.replaceProduct(id,product);
     }
 
     @DeleteMapping("/{id}")
