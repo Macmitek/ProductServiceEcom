@@ -1,6 +1,7 @@
 package com.example.productservice.services;
 
 import com.example.productservice.dtos.FakeStoreProductDto;
+import com.example.productservice.exceptions.InvalidProductIdException;
 import com.example.productservice.models.Category;
 import com.example.productservice.models.Product;
 import org.springframework.http.HttpMethod;
@@ -34,7 +35,7 @@ public class FakeStoreProductService implements ProductService{
         return product;
     }
     @Override
-    public Product getProductById(Long id) {
+    public Product getProductById(Long id) throws InvalidProductIdException {
         //Call the FakeStore API to get the product with given ID here.
         FakeStoreProductDto fakeStoreProductDto =
                 restTemplate.getForObject("https://fakestoreapi.com/products/" + id, FakeStoreProductDto.class);
@@ -72,16 +73,25 @@ public class FakeStoreProductService implements ProductService{
     public Product replaceProduct(Long id, Product product) {
         //Put Method
         // replace the product with given id with input output
-        //and return the updated product in output
-
-        RequestCallback requestCallback = restTemplate.httpEntityCallback(product, FakeStoreProductDto.class);
-        HttpMessageConverterExtractor<FakeStoreProductDto> responseExtractor = new HttpMessageConverterExtractor(FakeStoreProductDto.class,
+        // and return the updated product in output
+         // Convert Product to FakeStoreProductDto
+        FakeStoreProductDto mappedfakeStoreProductDto = convertProductToFakeStoreProductDto(product);
+        RequestCallback requestCallback = restTemplate.httpEntityCallback(mappedfakeStoreProductDto, FakeStoreProductDto.class);
+        HttpMessageConverterExtractor<FakeStoreProductDto> responseExtractor = new HttpMessageConverterExtractor<>(FakeStoreProductDto.class,
                 restTemplate.getMessageConverters());
         FakeStoreProductDto fakeStoreProductDto =
                 restTemplate.execute("https://fakestoreapi.com/products/" + id, HttpMethod.PUT, requestCallback, responseExtractor);
-
         return convertFakeStoreProductDtoToProduct(fakeStoreProductDto);
 
+    }
+    private FakeStoreProductDto convertProductToFakeStoreProductDto(Product product) {
+        FakeStoreProductDto fakeStoreProductDto = new FakeStoreProductDto();
+        fakeStoreProductDto.setTitle(product.getTitle());
+        fakeStoreProductDto.setDescription(product.getDescription());
+        fakeStoreProductDto.setImage(product.getImage());
+        fakeStoreProductDto.setPrice(product.getPrice());
+        fakeStoreProductDto.setCategory(product.getCategory().getTitle());
+        return fakeStoreProductDto;
     }
 
     @Override

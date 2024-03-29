@@ -1,7 +1,9 @@
 package com.example.productservice.controllers;
 
+import com.example.productservice.exceptions.InvalidProductIdException;
 import com.example.productservice.models.Product;
 import com.example.productservice.services.ProductService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,10 +22,22 @@ public class ProductController {
 
     //localhost:8080/products/30
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable("id") Long id) {
+    public ResponseEntity<Product> getProductById(@PathVariable("id") Long id) throws InvalidProductIdException {
+
+    /* throw new RuntimeException("Something went wrong");
+           Product product = null;
+            try {
+               product = productService.getProductById(id);
+           } catch (RuntimeException e) {
+                System.out.println("Something went wrong");
+               return new ResponseEntity<>(product, HttpStatus.NOT_FOUND);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                return
+           }
+     */
 
         Product product = productService.getProductById(id);
-        return new ResponseEntity<>(product, HttpStatusCode.valueOf(404));
+        return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
     //localhost:8080/products
