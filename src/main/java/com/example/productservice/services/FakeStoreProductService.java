@@ -4,7 +4,7 @@ import com.example.productservice.dtos.FakeStoreProductDto;
 import com.example.productservice.exceptions.InvalidProductIdException;
 import com.example.productservice.models.Category;
 import com.example.productservice.models.Product;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpMessageConverterExtractor;
 import org.springframework.web.client.RequestCallback;
@@ -66,9 +66,9 @@ public class FakeStoreProductService implements ProductService{
     }
     @Override
     public Product updateProduct( Long id, Product product) {
-        System.out.println("inside update product api :"+product.getDescription());
+        System.out.println("inside update product api :" + product.getDescription());
         RequestCallback requestCallback = restTemplate.httpEntityCallback(product, FakeStoreProductDto.class);
-        System.out.println("requestcallback res :"+requestCallback);
+        System.out.println("requestcallback res :" + requestCallback);
         HttpMessageConverterExtractor<FakeStoreProductDto> responseExtractor = new HttpMessageConverterExtractor<>(FakeStoreProductDto.class,
                 restTemplate.getMessageConverters());
         FakeStoreProductDto fakeStoreProductDto =
@@ -78,6 +78,7 @@ public class FakeStoreProductService implements ProductService{
 
     @Override
     public Product replaceProduct(Long id, Product product) {
+        System.out.println("inside replace product !!");
         FakeStoreProductDto mappedfakeStoreProductDto = convertProductToFakeStoreProductDto(product);
         RequestCallback requestCallback = restTemplate.httpEntityCallback(mappedfakeStoreProductDto, FakeStoreProductDto.class);
         HttpMessageConverterExtractor<FakeStoreProductDto> responseExtractor = new HttpMessageConverterExtractor<>(FakeStoreProductDto.class,

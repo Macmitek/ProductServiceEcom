@@ -55,12 +55,14 @@ public class ProductController {
     //Partial Update.
     @PatchMapping("/{id}")
     public Product updateProduct(@PathVariable("id") Long id,@RequestBody Product product) {
+        System.out.println("inside updateproduct controller");
         return productService.updateProduct(id,product);
     }
 
     //Replace Product
     @PutMapping("/{id}")
     public Product replaceProduct(@PathVariable("id") Long id,@RequestBody Product product) {
+        System.out.println("inside replace product controller");
         return productService.replaceProduct(id,product);
     }
 
