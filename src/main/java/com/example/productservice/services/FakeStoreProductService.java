@@ -11,7 +11,9 @@ import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class FakeStoreProductService implements ProductService{
@@ -66,6 +68,13 @@ public class FakeStoreProductService implements ProductService{
     }
     @Override
     public Product updateProduct( Long id, Product product) {
+
+//        Map<String, Object> requestBody = convertProductToMap(product);
+//        Map<String,Object> updatedProductres =  restTemplate.patchForObject("https://fakestoreapi.com/products/" + id,requestBody, Map.class);
+//        assert updatedProductres != null;
+//        System.out.println("map res :"+updatedProductres);
+//        return convertMaptoProduct(updatedProductres);
+
         System.out.println("inside update product api :" + product.getDescription());
         RequestCallback requestCallback = restTemplate.httpEntityCallback(product, FakeStoreProductDto.class);
         System.out.println("requestcallback res :" + requestCallback);
@@ -74,6 +83,27 @@ public class FakeStoreProductService implements ProductService{
         FakeStoreProductDto fakeStoreProductDto =
                 restTemplate.execute("https://fakestoreapi.com/products/" + id, HttpMethod.PATCH, requestCallback, responseExtractor);
         return convertFakeStoreProductDtoToProduct(fakeStoreProductDto);
+    }
+
+    private Product convertMaptoProduct(Map<String, Object> updatedProductres) {
+
+        Product product = new Product();
+        product.setId((Integer) updatedProductres.get("id"));
+        product.setTitle((String) updatedProductres.get("title"));
+        product.setPrice((Double) updatedProductres.get("price"));
+        product.setDescription((String) updatedProductres.get("description"));
+        product.setImage((String) updatedProductres.get("image"));
+        return product;
+    }
+
+    private Map<String, Object> convertProductToMap(Product product) {
+        Map<String, Object> map = new HashMap<>();
+        if (product.getTitle() != null) map.put("title", product.getTitle());
+        if (product.getPrice() != 0.0) map.put("price", product.getPrice());
+        if (product.getDescription() != null) map.put("description", product.getDescription());
+        if (product.getImage() != null) map.put("image", product.getImage());
+        if (product.getCategory() != null) map.put("category", product.getCategory().getTitle());
+        return map;
     }
 
     @Override
