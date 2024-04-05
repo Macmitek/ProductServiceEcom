@@ -4,6 +4,7 @@ import com.example.productservice.dtos.FakeStoreProductDto;
 import com.example.productservice.exceptions.InvalidProductIdException;
 import com.example.productservice.models.Category;
 import com.example.productservice.models.Product;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpMessageConverterExtractor;
@@ -15,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Service
+@Service("fakeStoreProductService")
 public class FakeStoreProductService implements ProductService{
     private RestTemplate restTemplate;
 
@@ -88,7 +89,7 @@ public class FakeStoreProductService implements ProductService{
     private Product convertMaptoProduct(Map<String, Object> updatedProductres) {
 
         Product product = new Product();
-        product.setId((Integer) updatedProductres.get("id"));
+        product.setId((Long) updatedProductres.get("id"));
         product.setTitle((String) updatedProductres.get("title"));
         product.setPrice((Double) updatedProductres.get("price"));
         product.setDescription((String) updatedProductres.get("description"));
@@ -129,7 +130,7 @@ public class FakeStoreProductService implements ProductService{
     }
 
     @Override
-    public Product createProduct() {
+    public Product createProduct(Product product) {
         return null;
     }
 
