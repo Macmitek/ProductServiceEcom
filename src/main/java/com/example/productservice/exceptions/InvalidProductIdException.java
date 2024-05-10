@@ -1,7 +1,15 @@
 package com.example.productservice.exceptions;
 
-public class InvalidProductIdException extends  Exception{
-    public InvalidProductIdException(String message) {
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class InvalidProductIdException extends Exception {
+    private Long productId;
+
+    public InvalidProductIdException(Long productId, String message) {
         super(message);
+        this.productId = productId;
     }
 }
