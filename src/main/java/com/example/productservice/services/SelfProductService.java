@@ -27,7 +27,8 @@ public class SelfProductService implements ProductService{
         //throw an Exception -> ProductNotFound
         if (optionalProduct.isEmpty()) {
             //throw an Exception -> ProductNotFound
-            return null;
+            throw new InvalidProductIdException(id, "Invalid Product Id");
+           // return null;
         }
 
         return optionalProduct.get();
@@ -35,7 +36,9 @@ public class SelfProductService implements ProductService{
 
     @Override
     public List<Product> getAllProducts() {
-        return null;
+        System.out.println("inside getall products");
+        return productRepository.findAll();
+
     }
 
     @Override
