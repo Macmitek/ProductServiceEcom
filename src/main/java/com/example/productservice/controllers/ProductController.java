@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,10 +20,12 @@ import java.util.List;
 public class ProductController {
     private ProductService productService;
     private AuthCommons authCommons;
+    private RestTemplate restTemplate;
 
-    ProductController(@Qualifier("selfProductService") ProductService productService, AuthCommons authCommons) {
+    ProductController(@Qualifier("selfProductService") ProductService productService, AuthCommons authCommons, RestTemplate restTemplate) {
         this.productService = productService;
         this.authCommons = authCommons;
+        this.restTemplate = restTemplate;
     }
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable("id") Long id) throws InvalidProductIdException {
@@ -39,8 +42,8 @@ public class ProductController {
         if(userDto == null){
             return  new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        boolean isAdmin = false;
-        System.out.println("isAdmin : " + isAdmin);
+//        boolean isAdmin = false;
+//        System.out.println("isAdmin : " + isAdmin);
 
 //        for(Role role : userDto.getRoles())
 //        {
