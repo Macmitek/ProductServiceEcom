@@ -7,6 +7,7 @@ import com.example.productservice.models.Product;
 import com.example.productservice.dtos.Role;
 import com.example.productservice.services.ProductService;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,13 +36,18 @@ public class ProductController {
     }
 
     //localhost:8080/products
-    @GetMapping("/all/{token}")
-    public ResponseEntity<List<Product>> getAllProducts( @PathVariable String token) {
-        System.out.println("inside all token  :: " + token);
-        UserDto userDto = authCommons.validateToken(token);
-        if(userDto == null){
-            return  new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
+    //@GetMapping("/all/{token}")
+
+    @GetMapping("/")
+    public ResponseEntity<Page<Product>> getAllProducts(@RequestParam("pageNumber") int pageNumber,
+                                                        @RequestParam("pageSize") int pageSize,
+                                                        @RequestParam("sortDir") String sortDir){
+        System.out.println("insice getall product pagination");
+//        System.out.println("inside all token  :: " + token);
+//        UserDto userDto = authCommons.validateToken(token);
+//        if(userDto == null){
+//            return  new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+//        }
 //        boolean isAdmin = false;
 //        System.out.println("isAdmin : " + isAdmin);
 
@@ -55,8 +61,8 @@ public class ProductController {
 //        if(!isAdmin){
 //            return null;
 //        }
-        List<Product> products = productService.getAllProducts();
-
+     //   List<Product> products = productService.getAllProducts();
+        Page<Product> products = productService.getAllProducts(pageNumber, pageSize, sortDir);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 

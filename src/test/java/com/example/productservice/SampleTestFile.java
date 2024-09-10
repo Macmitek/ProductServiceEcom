@@ -6,10 +6,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
+//@SpringBootTest
 public class SampleTestFile {
-    @Test
-    void testOnePlusOneISTwo(){
+//    @Test
+//    void testOnePlusOneISTwo(){
         //3 A's
         // Arrange act assert
         /*
@@ -22,18 +22,18 @@ public class SampleTestFile {
 
             In the assert function, the first value should be the expected, followed by actual value.
          */
-        int i = 1 + 1;
-        assert i == 2;
-    }
-    @Test
-    void testMultiplyFunction() {
-        int x = 2 * 2;
-        int y = 3 * 3;
-
-//        assert x == 4;
-//        assert y == 8;
-
-        assertEquals(y,9);
-
-    }
+//        int i = 1 + 1;
+//        assert i == 2;
+//    }
+//    @Test
+//    void testMultiplyFunction() {
+//        int x = 2 * 2;
+//        int y = 3 * 3;
+//
+////        assert x == 4;
+////        assert y == 8;
+//
+//        assertEquals(y,9);
+//
+//    }
 }

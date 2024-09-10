@@ -5,6 +5,8 @@ import com.example.productservice.exceptions.InvalidProductIdException;
 import com.example.productservice.models.Category;
 import com.example.productservice.models.Product;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpMessageConverterExtractor;
@@ -51,13 +53,18 @@ public class FakeStoreProductService implements ProductService{
         return convertFakeStoreProductDtoToProduct(fakeStoreProductDto);
     }
 
+
     @Override
-    public List<Product> getAllProducts() {
-        FakeStoreProductDto[] fakeStoreProductDtoArr =  restTemplate.getForObject("https://fakestoreapi.com/products/", FakeStoreProductDto[].class);
-        if(fakeStoreProductDtoArr == null){
-            return  null;
+    public Page<Product> getAllProducts(int pageNumber, int pageSize, String sortDir) {
+        FakeStoreProductDto[] fakeStoreProductDtos =
+                restTemplate.getForObject("https://fakestoreapi.com/products/",
+                        FakeStoreProductDto[].class);
+        List<Product> products = new ArrayList<>();
+        for (FakeStoreProductDto fakeStoreProductDto : fakeStoreProductDtos) {
+            products.add(convertFakeStoreProductDtoToProduct(fakeStoreProductDto));
         }
-        return convertFakeStoreProductDtoListToProductList(fakeStoreProductDtoArr);
+
+        return new PageImpl<>(products);
     }
 
     private List<Product> convertFakeStoreProductDtoListToProductList(FakeStoreProductDto[] fakeStoreProductDtoArr) {
