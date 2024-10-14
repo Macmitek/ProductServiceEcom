@@ -23,7 +23,7 @@ public class ProductController {
     private AuthCommons authCommons;
     private RestTemplate restTemplate;
 
-    ProductController(@Qualifier("selfProductService") ProductService productService, AuthCommons authCommons, RestTemplate restTemplate) {
+    ProductController(@Qualifier("fakeStoreProductService") ProductService productService, AuthCommons authCommons, RestTemplate restTemplate) {
         this.productService = productService;
         this.authCommons = authCommons;
         this.restTemplate = restTemplate;

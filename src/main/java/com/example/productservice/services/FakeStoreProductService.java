@@ -7,6 +7,9 @@ import com.example.productservice.models.Product;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpMessageConverterExtractor;
@@ -21,9 +24,14 @@ import java.util.Map;
 @Service("fakeStoreProductService")
 public class FakeStoreProductService implements ProductService{
     private RestTemplate restTemplate;
-
-    FakeStoreProductService(RestTemplate restTemplate) {
+    private RedisTemplate redisTemplate;
+    FakeStoreProductService(RestTemplate restTemplate,RedisTemplate redisTemplate) {
         this.restTemplate = restTemplate;
+        this.redisTemplate = redisTemplate;
+//        this.redisTemplate.setKeySerializer(new StringRedisSerializer());
+//        this.redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+//        this.redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+//        this.redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
     }
 
     private Product convertFakeStoreProductDtoToProduct(FakeStoreProductDto fakeStoreProductDto) {
@@ -34,23 +42,35 @@ public class FakeStoreProductService implements ProductService{
         product.setImage(fakeStoreProductDto.getImage());
         product.setPrice(fakeStoreProductDto.getPrice());
 
-        Category category = new Category();
-        category.setTitle(fakeStoreProductDto.getCategory());
-        product.setCategory(category);
+//        Category category = new Category();
+//        category.setTitle(fakeStoreProductDto.getCategory());
+//        product.setCategory(category);
         return product;
     }
     @Override
     public Product getProductById(Long id) throws InvalidProductIdException {
+
+        System.out.println("Got the request in Product Service");
+        Product product = (Product) redisTemplate.opsForHash().get("PRODUCTS", "PRODUCT_" + id);
+
+        if (product != null) {
+            // Cache Hits
+            System.out.println("inside cache hit");
+            return product;
+        }
+
         //Call the FakeStore API to get the product with given ID here.
         FakeStoreProductDto fakeStoreProductDto =
                 restTemplate.getForObject("https://fakestoreapi.com/products/" + id, FakeStoreProductDto.class);
 
         if (fakeStoreProductDto == null) {
-            return null;
+            throw new InvalidProductIdException(id, "Invalid productId passed");
         }
+        product = convertFakeStoreProductDtoToProduct(fakeStoreProductDto);
+        redisTemplate.opsForHash().put("PRODUCTS", "PRODUCT_" + id, product);
 
         //Convert fakeStoreProductDto to product object.
-        return convertFakeStoreProductDtoToProduct(fakeStoreProductDto);
+        return product;
     }
 
 
